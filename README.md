@@ -8,12 +8,6 @@ Este es un **sistema de administración profesional** desarrollado con **Laravel
 
 ---
 
-## ✨ Características principales
-
-Este es un sistema de administración desarrollado en **Laravel 11** con **Filament PHP v3**, que se conecta a una tienda de **Shopify** mediante su API. Su objetivo es actuar como un backend profesional para gestionar productos, inventario, pedidos y envíos desde un solo lugar.
-
----
-
 ## 🚀 Funcionalidades
 
 - 🔗 Conexión segura a la API de Shopify  
@@ -32,4 +26,3 @@ Este es un sistema de administración desarrollado en **Laravel 11** con **Filam
 - Filament v3  
 - MySQL / SQLite  
 - Shopify Admin API 2024-04
-
