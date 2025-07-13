@@ -2,18 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use Exception;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Variante;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Services\ShopifyService;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Split;
 use function Laravel\Prompts\select;
 use Filament\Forms\Components\Select;
+
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\VarianteResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -97,7 +100,26 @@ class VarianteResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->before(function($records){
+                        foreach($records as $record){
+                            if($record->shopify_variante_id){
+                                try {
+                                    app(ShopifyService::class)->eliminarVariante($record->shopify_variante_id,$record->productos->shopify_id);
+                                    Notification::make()
+                                    ->title('Shopify Eliminado Correctamente')
+                                    ->success()
+                                    ->body('Se ha eliminado la variante:' . $record->nombre . ' en Shopify')
+                                    ->send();
+                                } catch (Exception $e) {
+                                    Notification::make()
+                                    ->title('Shopify Error al Eliminar')
+                                    ->danger()
+                                    ->body('No se pudo eliminar la variante: ' . $record->nombre . ' en Shopify' )
+                                    ->send();
+                                }
+                            }
+                        }
+                    }),
                 ]),
             ]);
     }

@@ -47,9 +47,9 @@ class ShopifyService {
 
     //crear Producto
     public function crearProducto($datos){
-        $respues = Http::withHeaders($this->headers())->post("{$this->base_url}/products.json",['product' =>$datos]);
+        $respuesta = Http::withHeaders($this->headers())->post("{$this->base_url}/products.json",['product' =>$datos]);
 
-        return $this->manejoError($respues)['product'];
+        return $this->manejoError($respuesta)['product'];
     }
 
     //Actualizar un producto entero 
@@ -79,6 +79,27 @@ class ShopifyService {
 
         return $this->manejoError($respuesta)['variants'];
     }
+
+    //Crear Variante
+    public function crearVariante($datos,$producto_id){
+        $respuesta = Http::withHeaders($this->headers())->post("{$this->base_url}/products/{$producto_id}/variants.json", ['variant' => $datos]);
+
+        return $this->manejoError($respuesta)['variant'];
+    }
+
+    //Actualizar Variante
+    public function actualizarVariante($variante_id,$datos){
+        $respuesta = Http::withHeaders($this->headers())->put("{$this->base_url}/variants/{$variante_id}.json",['variant' => $datos]);
+
+        return $this->manejoError($respuesta)['variant'];
+    }
+
+    public function eliminarVariante($variante_id,$producto_id){
+        $respuesta = Http::withHeaders($this->headers())->delete("{$this->base_url}/products/{$producto_id}/variants/{$variante_id}.json");
+
+        return $respuesta->successful();
+    }
+    
 
     //Obtener un item del inventario desde la variante 
     public function getItemInventarioPorVariante($variante_id){
