@@ -22,36 +22,45 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use App\Filament\Resources\ProductoResource\RelationManagers;
+use Filament\Forms\Components\Section;
 
 class ProductoResource extends Resource
 {
     protected static ?string $model = Producto::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('nombre')
-                    ->required()
-                    ->maxLength(255),
-                Textarea::make('descripcion')
-                    ->columnSpanFull(),
-                TextInput::make('precio')
-                    ->label('Valor Relacionado')
-                    ->required()
-                    ->prefix('$')
-                    ->currencyMask(thousandSeparator: ',',decimalSeparator: '.',precision: 2)             
-                    ->required(),
-                TextInput::make('stock_local')
-                    ->numeric()
-                    ->default(0),
-                TextInput::make('shopify_id')
-                    ->maxLength(255),
-                Toggle::make('activo'),
-                TextInput::make('imagen_url')
-                    ->maxLength(255),
+                Section::make([
+                    TextInput::make('nombre')
+                        ->required()
+                        ->maxLength(255),
+                    TextInput::make('precio')
+                        ->label('Valor Relacionado')
+                        ->required()
+                        ->prefix('$')
+                        ->currencyMask(thousandSeparator: ',',decimalSeparator: '.',precision: 2)             
+                        ->required()
+                        ->rules(['min:0.0'])->validationMessages(['min' => 'El valor debe ser mayor o igual a 0']),
+                    Textarea::make('descripcion')
+                        ->columnSpanFull(),
+                    TextInput::make('stock_local')
+                        ->numeric()
+                        ->default(0)
+                        ->rules(['min:0.0'])->validationMessages(['min' => 'El valor debe ser mayor o igual a 0']),
+                    TextInput::make('shopify_id')
+                        ->maxLength(255)
+                        ->readOnly(),
+                    Toggle::make('activo')
+                        ->onColor('success')
+                        ->offColor('danger'),
+                    TextInput::make('imagen_url')
+                        ->maxLength(255),
+
+                ])->columns(2),
             ]);
     }
 
@@ -71,7 +80,8 @@ class ProductoResource extends Resource
                 IconColumn::make('activo')
                     ->boolean(),
                 TextColumn::make('imagen_url')
-                    ->searchable(),
+                    ->searchable()
+                    ->default('-'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

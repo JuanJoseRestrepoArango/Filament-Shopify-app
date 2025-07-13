@@ -17,4 +17,9 @@ class Producto extends Model
         'activo',
         'imagen_url'
     ];
+
+    public function variantes(){
+        return $this->hasMany(Variante::class);
+    }
+    
 }
