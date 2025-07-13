@@ -7,10 +7,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ariaieboy/filament-currency": "^1.13",
         "filament/filament": "^3.3",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1",
-        "pelmered/filament-money-field": "^1.5"
+        "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

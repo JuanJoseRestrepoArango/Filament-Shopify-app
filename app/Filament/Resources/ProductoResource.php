@@ -18,6 +18,7 @@ use App\Filament\Resources\ProductoResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use App\Filament\Resources\ProductoResource\RelationManagers;
+use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
 class ProductoResource extends Resource
 {
@@ -34,9 +35,12 @@ class ProductoResource extends Resource
                     ->maxLength(255),
                 Textarea::make('descripcion')
                     ->columnSpanFull(),
-                MoneyInput::make('precio')
-                    ->label('Precio')
-                    ->decimals(2),
+                TextInput::make('precio')
+                    ->label('Valor Relacionado')
+                    ->required()
+                    ->prefix('$')
+                    ->currencyMask(thousandSeparator: ',',decimalSeparator: '.',precision: 2)             
+                    ->required(),
                 TextInput::make('stock_local')
                     ->numeric()
                     ->default(0),
@@ -54,9 +58,8 @@ class ProductoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('precio')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('valorRelacionado')->label('Valor Relacionado')
+                    ->money('COP')->searchable()->toggleable(),
                 Tables\Columns\TextColumn::make('stock_local')
                     ->numeric()
                     ->sortable(),
