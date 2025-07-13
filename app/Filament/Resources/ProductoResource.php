@@ -56,24 +56,24 @@ class ProductoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')
+                TextColumn::make('nombre')
                     ->searchable(),
-                TextColumn::make('valorRelacionado')->label('Valor Relacionado')
+                TextColumn::make('precio')->label('Precio')
                     ->money('COP')->searchable()->toggleable(),
-                Tables\Columns\TextColumn::make('stock_local')
+                TextColumn::make('stock_local')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('shopify_id')
+                TextColumn::make('shopify_id')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('activo')
+                IconColumn::make('activo')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('imagen_url')
+                TextColumn::make('imagen_url')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
