@@ -2,23 +2,26 @@
 
 namespace App\Filament\Resources;
 
+use Exception;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Producto;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Services\ShopifyService;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductoResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
 use App\Filament\Resources\ProductoResource\RelationManagers;
-use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 
 class ProductoResource extends Resource
 {
@@ -86,7 +89,29 @@ class ProductoResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->before(function($records){
+                        foreach($records as $record){
+
+                            if($record->shopify_id){
+                                try {
+                                    app(ShopifyService::class)->eliminarProducto($record->shopify_id);
+
+                                    Notification::make()
+                                    ->title('Shopify Eliminado Correctamente')
+                                    ->success()
+                                    ->body('Se ha eliminado el producto:' . $record->nombre . ' en Shopify')
+                                    ->send();
+                                } catch (Exception $e) {
+                                    Notification::make()
+                                    ->title('Shopify Error al Eliminar')
+                                    ->danger()
+                                    ->body('No se pudo eliminar el producto: ' . $record->nombre . ' en Shopify' )
+                                    ->send();
+                                }
+                            }
+                            
+                        }
+                    }),
                 ]),
             ]);
     }
